@@ -1,0 +1,41 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: analytics-api
+  datasource:
+    url: jdbc:postgresql://main-workgroup.743298171118.ap-southeast-1.redshift-serverless.amazonaws.com:5439/main_db
+    username: user_ignite
+    password: Xd1&yT6kLw3^uEo8Zq
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: redshift-hikari-pool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      validation-timeout: 5000
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        temp:
+          use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: none
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+logging:
+  level:
+    root: INFO
+    com.example.analytics: INFO

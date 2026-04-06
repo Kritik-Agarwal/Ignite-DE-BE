@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,11 +21,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             IllegalArgumentException.class,
             MissingServletRequestParameterException.class,
-            MethodArgumentTypeMismatchException.class
+            MethodArgumentTypeMismatchException.class,
+            MethodArgumentNotValidException.class
     })
     public ResponseEntity<ErrorResponseDto> handleBadRequest(Exception ex, HttpServletRequest request) {
         log.warn("Bad request for path {}: {}", request.getRequestURI(), ex.getMessage());
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+        String message = ex instanceof MethodArgumentNotValidException manve
+                ? manve.getBindingResult().getFieldErrors().stream().findFirst().map(error -> error.getDefaultMessage()).orElse("Invalid request.")
+                : ex.getMessage();
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request);
     }
 
     @ExceptionHandler({DatabaseException.class, DataAccessException.class})

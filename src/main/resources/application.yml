@@ -38,4 +38,11 @@ springdoc:
 logging:
   level:
     root: INFO
-    com.example.analytics: INFO
+    com.example.analytics: DEBUG
+aws:
+  s3:
+    bucket: ${AWS_S3_BUCKET:ignite-de}
+    region: ap-southeast-1
+    presign-duration-minutes: 15
+    server-side-encryption: ${AWS_S3_SERVER_SIDE_ENCRYPTION:}
+    kms-key-id: ${AWS_S3_KMS_KEY_ID:}
